@@ -1,6 +1,7 @@
 const app = require("express")();
-const http = require("http").createServer(app);
+const http = require("http").Server(app);
 const io = require("socket.io")(http);
+const port = process.env.PORT || 3000;
 
 app.get("/", function(req, res) {
   res.sendFile(__dirname + "/index.html");
@@ -8,10 +9,10 @@ app.get("/", function(req, res) {
 
 io.on("connection", function(socket) {
   socket.on("chat message", function(msg) {
-    console.log("message: " + msg);
+    io.emit("chat message", msg);
   });
 });
 
-http.listen(3000, function() {
-  console.log("listening on *:3000");
+http.listen(port, function() {
+  console.log("listening on *:" + port);
 });
